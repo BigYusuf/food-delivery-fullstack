@@ -125,19 +125,21 @@ export class UsersService {
       user.password,
     );
     if (user && comparedPassword) {
-      const tokenSender = new TokenSender(this.jwtService, this.configService)
-      return tokenSender.sendToken(user)
+      const tokenSender = new TokenSender(this.jwtService, this.configService);
+      return tokenSender.sendToken(user);
     } else {
       return {
         user: null,
         accessToken: null,
         refreshToken: null,
-        error:{
-          message: 'Invalid Credentials'
-        }
-      }
+        error: {
+          message: 'Invalid Credentials',
+        },
+      };
     }
   }
+
+  //compare password with hashpassword
   async comparePassword(
     password: string,
     hashedPassword: string,
@@ -145,6 +147,18 @@ export class UsersService {
     return await bcrypt.compare(password, hashedPassword);
   }
 
+  //get logged in user
+  async getLoggedInUser(req: any) {
+    const user = req.user;
+    const accessToken = req.accesstoken;
+    const refreshToken = req.refreshtoken;
+
+    console.log({ user, accessToken, refreshToken });
+
+    return { user, accessToken, refreshToken };
+  }
+
+  //get all users service
   async getUsers() {
     return this.prisma.user.findMany({});
   }
